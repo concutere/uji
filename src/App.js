@@ -81,47 +81,14 @@ class LoadFileOp extends Component {
 class Visbox extends Component {
   constructor(props) {
     super(props);
-    this.state = {'data':props.data || new Uji(),'vspec':this.respec(props.data)};
+    this.state = {'data':props.data || new Uji()};
 
-    this.respec = this.respec.bind(this);
   }
 
-  respec(data) {
-    /*let visbox = document.getElementById('visbox');
-    if (visbox !== null && visbox !== undefined) {
-    //let vlSpec =
-      return createClassFromLiteSpec('Autochart',{
-        "$schema": "https://vega.github.io/schema/vega-lite/v2.0.json",
-        "description": "autochart prototyping with vega!",
-        "width":visbox.clientWidth,
-        "height":visbox.clientHeight,
-        "autosize":{
-          "type":"fit",
-          "contains":"padding"
-        },
-        "data": {
-          "values": data.byCol
-        },
-        "mark": "line",
-        "encoding": {
-          "x": {"field": "Date", "type": "temporal", "axis": {"grid":false}},
-          "y": {"field": data.byRow[0][1], "type": "quantitative", "axis": {"grid":false}},
-        }
-      });
-    }*/
-    //vega.embed("#visbox", vlSpec, {"actions":false});
-  }
-
-  shouldComponentUpdate() {
-    return true;
-  }
   componentWillReceiveProps(props) {
-    this.setState({'data':props.data, 'vspec':this.respec(props.data)});
+    this.setState({'data':props.data});
   }
-  componentDidUpdate(props) {
-    console.log('...')
-    //vega.embed("#visbox", this.respec(props.data), {"actions":false});
-  }
+
   render() {
     return (<div id="visbox">
       <Autochart data={this.state.data} />
@@ -172,15 +139,61 @@ class Autochart extends Component {
   }
 
   render() {
+    //TODO better svg width/height, scaling on viewBox makes for oversized lines...
     return (
+      <div id="autochart-outer" style={{width:'100%',height:'100%'}}>
+        <AutoSvg data={this.state.data} />
+      </div>
+    );
+  }
+
+  rendertmp() {
+    return 
+    {
       <div id="autochart-outer" style={{width:'100%',height:'100%'}}>
         <svg id="autochart" width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
           <polyline points={this.state.data.ptstr(100,100)} stroke="black" fill="transparent" strokeWidth="1"/>
         </svg>
       </div>
-    );
-  }
+      };
+    }
 }
 
+class AutoSvg extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      'data':props.data || new Uji(), 
+      'width':100, 
+      'height':100
+    };
+  }
+
+  componentWillReceiveProps(props) {
+    if (this.state.data !== props.data) {
+      this.setState({
+        'data':props.data || this.state.data
+      });
+    }
+  }
+
+  componentDidMount() {
+    if(this.autosvg !== undefined) {
+      let svg = this.autosvg;
+      this.setState({
+        'width':svg.clientWidth, 
+        'height': svg.clientHeight}
+      );
+    }
+  }
+
+  render() {
+    //TODO X/Y axis gutter/legend
+    return <svg id="autochart" ref={(svg) => { this.autosvg = svg; }} width="100%" height="100%" viewBox={`0 0 ${this.state.width} ${this.state.height}`} preserveAspectRatio="none">
+      <polyline points={this.state.data.ptstr(this.state.width,this.state.height)} />
+    </svg>;
+  }
+}
 
 export default App;
