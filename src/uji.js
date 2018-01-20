@@ -91,7 +91,7 @@ class Uji {
     let diff = max - min;
 
     let scale = diff === 0 ? 1 : Math.min(1, y / diff);
-    let scaled = data.map((v) => (v - min) * scale);
+    let scaled = data.map((v) => (max - v) * scale);
 
     let step = x / data.length;
 
