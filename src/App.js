@@ -188,11 +188,66 @@ class AutoSvg extends Component {
     }
   }
 
+  minmax(hi, lo, val) {
+    return Math.min(lo, Math.max(hi, val));
+  }
+
+  xaxis(x, y) {
+    if (!this.state.data) {
+      return;
+    }
+
+    let axs = this.state.data.axes(x, y);
+    let xs = axs[0];
+
+    return xs.map((xx, i) => <line x1={xx} y1={this.state.height-10} x2={xx} y2={this.state.height-15} stroke="black" strokeWidth="1"/>);
+  }
+
+  yaxis(x, y) {
+    if (!this.state.data) {
+      return;
+    }
+
+    let axs = this.state.data.axes(x, y);
+    let xs = axs[0];
+    let ys = axs[1];
+
+    return ys.map((yy, i) => <line x1="85" y1={yy} x2="90" y2={yy} stroke="black" strokeWidth="1"/>);
+  }
+
+  
+
   render() {
     //TODO X/Y axis gutter/legend
+    var xaxis,yaxis;
+    if (this.state.width ) {
+      xaxis = this.xaxis(this.state.width, this.state.height);
+      yaxis = this.yaxis(this.state.width, this.state.height);
+    }
+
     return <svg id="autochart" ref={(svg) => { this.autosvg = svg; }} width="100%" height="100%" viewBox={`0 0 ${this.state.width} ${this.state.height}`} preserveAspectRatio="none">
-      <polyline points={this.state.data.ptstr(this.state.width,this.state.height)} />
+  <g id="autoxaxis">
+    {xaxis}
+  </g>
+  <g id="autoyaxis">
+    {yaxis}
+  </g>
+      <polyline transform="translate(100)" width={this.state.width-100} height={this.state.height-50} 
+        points={this.state.data.ptstr(this.state.width-100,this.state.height-50)} />
+
     </svg>;
+  }
+
+  tmp() {
+  return [<g id="autoxaxis" fill="red">
+    <rect x="100" y={this.state.height-50} width={this.state.width-100} height="50"/>
+  </g>,
+  <g id="autoyaxis" fill="blue">
+    <rect y="0" x={0} height={this.state.height-50} width="100"/>
+  </g>,
+  <g id="legend" fill="yellow">
+    <rect x="0" width="100" y={this.state.height-50} height="50" />
+  </g>];
   }
 }
 

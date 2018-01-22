@@ -100,6 +100,42 @@ class Uji {
     return str;
   }
 
+  axes(x, y) {
+    if(this.byCol === null || this.byCol === undefined || this.headers.length < 2) {
+      return [[],[]];
+    }
+
+    let data = this.byCol[this.headers[1]]; //TODO multicol + vari col opts
+
+    if (data === null || data === undefined || data.length < 1) {
+      return [[],[]];
+    }
+
+    let max = Math.max(...data);
+    let min = Math.min(...data);
+    let diff = max - min;
+
+    let scale = diff === 0 ? 1 : Math.min(1, y / diff);
+    //let scaled = data.map((v) => (max - v) * scale);
+
+    let xstep = x / 100;
+    let ystep = y / 50;
+
+    let ys = [];
+
+    for (var yy = 0; yy <= y; yy += 50) {
+      ys.push(yy);
+    }
+
+    let xs = [];
+
+    for (var xx = 0; xx <= x; xx += 100) {
+      xs.push(xx);
+    }
+
+    return [ xs, ys ] ;
+  }
+  
   ////////////////////////////////
 
   static cols2rows(dataByCol) {
@@ -248,6 +284,108 @@ class Uji {
       this.stack.splice(this.stack.indexOf(transform),1);
     }
   }
+
+
+  ////////////////////////////////////////////////
+
+
+  static ASAP(data, resolution) {
+    if (resolution < data.length) {
+        data = Uji.SMA(data, Math.trunc(data.length / resolution),
+            Math.trunc(data.length / resolution));
+    }
+    var metrics = new Metrics(data);
+    var originalKurt = metrics.kurtosis();
+    var minObj = metrics.roughness();
+    var windowSize = 1;
+    for (var w = Math.round(data.length / 10);
+            w >= 2; w -=1) {
+        var smoothed = Uji.SMA(data, w, 1);
+        metrics = new Metrics(smoothed);
+        var roughness = metrics.roughness();
+        if (roughness < minObj) {
+            if (metrics.kurtosis() >= originalKurt) {
+                minObj = roughness;
+                windowSize = w;
+            }
+        }
+    }
+    return Uji.SMA(data, windowSize, 1);
+  }
+
+
+  static SMA(data, range, slide) {
+      var windowStart = 0;
+      var sum = 0;
+      var count = 0;
+      var values = [];
+
+      for (var i = 0; i < data.length; i ++) {
+          if (isNaN(data[i])) { data[i] = 0; }
+          if (i - windowStart >= range) {
+              values.push(sum / count);
+              var oldStart = windowStart;
+              while (windowStart < data.length && windowStart - oldStart < slide) {
+                  sum -= data[windowStart];
+                  count -= 1;
+                  windowStart += 1;
+              }
+          }
+          sum += data[i];
+          count += 1;
+      }
+      if (count == range) {
+          values.push(sum / count);
+      }
+      return values;
+  }
+
+
 }
 
+class Metrics {
+  constructor(values) {
+      this.len = values.length;
+      this.values = values;
+      this.m = Metrics.mean(values);
+  }
+
+  static mean(values) {
+      var m = 0;
+      for (var i = 0; i < values.length; i += 1) {
+          m += values[i];
+      }
+      return m / values.length;
+  }
+
+  static std(values) {
+      var m = Metrics.mean(values);
+      var std = 0;
+      for (var i = 0; i < values.length; i += 1) {
+          std += Math.pow((values[i] - m), 2);
+      }
+      return Math.sqrt(std / values.length);
+  }
+
+  kurtosis() {
+      var u4 = 0, variance = 0;
+      for (var i = 0; i < this.len; i ++) {
+          u4 += Math.pow((this.values[i] - this.m), 4);
+          variance += Math.pow((this.values[i] - this.m), 2);
+      }
+      return this.len * u4 / Math.pow(variance, 2);
+  }
+
+  roughness() {
+      return Metrics.std(this.diffs());
+  }
+
+  diffs() {
+       var diff = new Array(this.len - 1);
+       for (var i = 1; i < this.len; i += 1) {
+          diff[i - 1] = this.values[i] - this.values[i - 1];
+       }
+       return diff;
+  }
+}  
 export default Uji;
