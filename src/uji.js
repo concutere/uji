@@ -95,6 +95,7 @@ class Uji {
 
     let step = x / data.length;
 
+    //TODO move str to App, return scaled/step 
     let str = scaled.map((v,i) => `${step*i},${v}`).join(' ');
     //console.log(str);
     return str;
@@ -129,10 +130,10 @@ class Uji {
 
     //console.log(ystep);
     for (var yy = 0; yy*50 <= y; yy++) {
+      //TODO only floor for int data (round to _ digits for decimal? need to handle date data in y axis?)
       ys.push(Math.floor(min + ((yy*50)/y) * diff));
       //console.log(ys);
     }
-    ys.reverse(); 
 
     let xs = [];
     
