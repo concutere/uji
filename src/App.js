@@ -212,7 +212,7 @@ class AutoSvg extends Component {
     let xs = axs[0];
     let ys = axs[1];
 
-    return ys.map((yy, i) => <g transform="translate(0,10)"><line x1="85" y1={i*50} x2="90" y2={i*50} stroke="black" strokeWidth="1"/><text textAnchor="end" x="80" y={i*50+4} fontFamily="Helvetica, Tahoma, Arial, sans-serif" fontSize="12">{yy}</text></g>);
+    return ys.map((yy, i) => <g transform="translate(0,10)"><line x1="85" y1={this.state.height-(ys.length-(i))*50} x2="90" y2={this.state.height-(ys.length-(i))*50} stroke="black" strokeWidth="1"/><text textAnchor="end" x="80" y={this.state.height-(ys.length-(i))*50+4 } fontFamily="Helvetica, Tahoma, Arial, sans-serif" fontSize="12">{yy}</text></g>);
   }
 
   
@@ -222,7 +222,7 @@ class AutoSvg extends Component {
     var xaxis,yaxis;
     if (this.state.width ) {
       xaxis = this.xaxis(this.state.width-100, this.state.height-50);
-      yaxis = this.yaxis(this.state.width, this.state.height);
+      yaxis = this.yaxis(this.state.width-100, this.state.height-50);
     }
 
     return <svg id="autochart" ref={(svg) => { this.autosvg = svg; }} width="100%" height="100%" viewBox={`0 0 ${this.state.width} ${this.state.height}`} preserveAspectRatio="none">

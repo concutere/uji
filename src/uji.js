@@ -96,11 +96,12 @@ class Uji {
     let step = x / data.length;
 
     let str = scaled.map((v,i) => `${step*i},${v}`).join(' ');
-    console.log(str);
+    //console.log(str);
     return str;
   }
 
   axes(x, y) {
+    //console.log(`x:${x}, y:${y}`);
     if(this.byCol === null || this.byCol === undefined || this.headers.length < 2) {
       return [[],[]];
     }
@@ -126,16 +127,17 @@ class Uji {
 
     let ys = [];
 
+    //console.log(ystep);
     for (var yy = 0; yy*50 <= y; yy++) {
       ys.push(Math.floor(min + ((yy*50)/y) * diff));
-      console.log(ys);
+      //console.log(ys);
     }
     ys.reverse(); 
 
     let xs = [];
     
 
-    console.log(xstep);
+    //console.log(xstep);
     for (var xx = 0; xx*100 <= x; xx++) {
       xs.push(this.byCol[this.headers[0]][Math.floor(xx*dx)]);
     }
@@ -156,7 +158,7 @@ class Uji {
        return dataByCol[h][i]; 
       }));
     });
-    console.log(rows);
+    //console.log(rows);
     return rows;
   }
 
