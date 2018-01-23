@@ -118,19 +118,26 @@ class Uji {
     let scale = diff === 0 ? 1 : Math.min(1, y / diff);
     //let scaled = data.map((v) => (max - v) * scale);
 
-    let xstep = x / 100;
+    let xstep = ((x) / 100);
     let ystep = y / 50;
+
+    let dx = Math.floor(data.length / xstep);
+    let dy = Math.floor(scale / ystep);
 
     let ys = [];
 
-    for (var yy = 0; yy <= y; yy += 50) {
-      ys.push(yy);
+    for (var yy = 0; yy*50 <= y; yy++) {
+      ys.push(Math.floor(min + ((yy*50)/y) * diff));
+      console.log(ys);
     }
+    ys.reverse(); 
 
     let xs = [];
+    
 
-    for (var xx = 0; xx <= x; xx += 100) {
-      xs.push(xx);
+    console.log(xstep);
+    for (var xx = 0; xx*100 <= x; xx++) {
+      xs.push(this.byCol[this.headers[0]][Math.floor(xx*dx)]);
     }
 
     return [ xs, ys ] ;

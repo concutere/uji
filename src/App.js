@@ -200,7 +200,7 @@ class AutoSvg extends Component {
     let axs = this.state.data.axes(x, y);
     let xs = axs[0];
 
-    return xs.map((xx, i) => <line x1={xx} y1={this.state.height-10} x2={xx} y2={this.state.height-15} stroke="black" strokeWidth="1"/>);
+    return xs.map((xx, i) => <g><line x1={100*(i+1)} y1={this.state.height-30} x2={100*(i+1)} y2={this.state.height-25} stroke="black" strokeWidth="1"/><text x={100*(i+1) - 35} y={this.state.height - 10} fontFamily="Helvetica, Tahoma, Arial, sans-serif" fontSize="12">{xx}</text></g>);
   }
 
   yaxis(x, y) {
@@ -212,7 +212,7 @@ class AutoSvg extends Component {
     let xs = axs[0];
     let ys = axs[1];
 
-    return ys.map((yy, i) => <line x1="85" y1={yy} x2="90" y2={yy} stroke="black" strokeWidth="1"/>);
+    return ys.map((yy, i) => <g transform="translate(0,10)"><line x1="85" y1={i*50} x2="90" y2={i*50} stroke="black" strokeWidth="1"/><text textAnchor="end" x="80" y={i*50+4} fontFamily="Helvetica, Tahoma, Arial, sans-serif" fontSize="12">{yy}</text></g>);
   }
 
   
@@ -221,7 +221,7 @@ class AutoSvg extends Component {
     //TODO X/Y axis gutter/legend
     var xaxis,yaxis;
     if (this.state.width ) {
-      xaxis = this.xaxis(this.state.width, this.state.height);
+      xaxis = this.xaxis(this.state.width-100, this.state.height-50);
       yaxis = this.yaxis(this.state.width, this.state.height);
     }
 
@@ -232,7 +232,7 @@ class AutoSvg extends Component {
   <g id="autoyaxis">
     {yaxis}
   </g>
-      <polyline transform="translate(100)" width={this.state.width-100} height={this.state.height-50} 
+      <polyline transform="translate(100, 10)" width={this.state.width-100} height={this.state.height-50} 
         points={this.state.data.ptstr(this.state.width-100,this.state.height-50)} />
 
     </svg>;
