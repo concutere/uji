@@ -11,8 +11,8 @@ class App extends Component {
     this.afterUpdated = this.afterUpdated.bind(this);
   }
 
-  afterUpdated(data) {
-    console.log('App.afterUpdated');
+  afterUpdated(data, origin) {
+    console.log('App.afterUpdated from ' + origin);
     this.setState({'data':data});
   }
 
@@ -36,33 +36,53 @@ class Stackbox extends Component {
     this.afterUpdated = this.afterUpdated.bind(this);    
   }
 
-  afterUpdated(data) {
+  afterUpdated(data, origin) {
     console.log('Stackbox.afterUpdated');
     this.setState({'data':data});
     if(this.state.onafterupdated !== null) {
-      this.state.onafterupdated(data);
+      this.state.onafterupdated(data, origin);
     }
   }
 
   render() {
-    return <div id="stackbox"><LoadFileOp onafterloaded={this.afterUpdated}/></div>;
+    return <div id="stackbox"><LoadFileOp onafterupdated={this.afterUpdated}/></div>;
   }
+}
+
+class StackOp extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {'onafterupdated':props.onafterupdated || null};
+  }
+
+  afterUpdated(data, origin) {
+    console.log('StackOp.afterUpdated');
+    if(this.state.onafterupdated !== null) {
+      this.state.onafterupdated(data, origin);
+    }
+  }
+
+  render() {
+    return <div id="stackop"></div>
+  }
+  
 }
 
 class LoadFileOp extends Component {
   constructor(props) {
     super(props);
 
-    //default to quandl params for example, need to APIify
-    this.state = {'dateCol':0,'valCols':[5],'onafterloaded':props.onafterloaded || null};
+    //default to quandl params for example, need to APIify + handle csv ...
+    this.state = {'dateCol':0,'valCols':[1],'onafterupdated':props.onafterupdated || null};
 
     this.parseFile = this.parseFile.bind(this);
     this.afterLoaded = this.afterLoaded.bind(this);
   }
 
   afterLoaded() {
-    if(this.state.onafterloaded !== null) {
-      this.state.onafterloaded(this.state.data);
+    if(this.state.onafterupdated !== null) {
+      this.state.onafterupdated(this.state.data, 'loadfile');
     }
   }
 

@@ -211,7 +211,7 @@ class Uji {
 
     let hstr = '';
     if (includeHeaders) {
-      `${headers.join('\t')}\n`;
+      hstr = `${headers.join('\t')}\n`;
     }
     return `${hstr}${rows.map((r) => { return r.map((v) => {return v.toString();}).join('\t')}).join('\n')}`;
     
