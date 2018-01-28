@@ -105,7 +105,7 @@ th {
 	overflow:hidden;
 	display:grid;
 
-	grid-auto-columns: 90px;
+	grid-auto-columns: minmax(90px, 200px);
 	grid-template-rows:90px;
 	grid-gap: 0 10px;
 	padding:5px;
@@ -118,19 +118,18 @@ th {
 	box-sizing: border-box;
 	box-shadow:0 0 5px 1px steelblue, inset 0 0 5px -1px whitesmoke;
 	grid-row:1;
-	font-size:.8em;
 	min-width:90px;
 	max-width:200px;
 	width:min-content;
 	padding:3px;
-
+  height:90px;
   white-space: nowrap;
   overflow:hidden;
   text-overflow: ellipsis;
 	text-align:center;
 	font-weight:bold;
 
-	padding-top:calc(50% - .5em);
+	
 }
 
 #stackbox > div:active {

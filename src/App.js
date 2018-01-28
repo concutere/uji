@@ -20,7 +20,7 @@ class App extends Component {
   render() {
     return ( 
       <div id="outer">
-        <Stackbox onafterupdated={this.afterUpdated} />
+        <Stackbox onafterupdated={this.afterUpdated} ops={{'index':Uji.index, 'log':Uji.log, 'smooth':Uji.smooth}} />
         <Visbox data={this.state.data} />
         <Datagrid data={this.state.data} />
       </div>   

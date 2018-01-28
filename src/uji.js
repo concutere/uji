@@ -153,8 +153,8 @@ class Uji {
       return [];
     }
     let headers = Object.keys(dataByCol);
-    let rows = [];
-    dataByCol[0].forEach((v,i) => {
+    let rows = [headers];
+    dataByCol[headers[0]].forEach((v,i) => {
       rows.push(headers.map((h,hi) => {
        return dataByCol[h][i]; 
       }));
