@@ -213,7 +213,7 @@ class Uji {
     if (includeHeaders) {
       hstr = `${headers.join('\t')}\n`;
     }
-    return `${hstr}${rows.map((r) => { return r.map((v) => {return v.toString();}).join('\t')}).join('\n')}`;
+    return `${hstr}${rows.map((r) => { return r.map((v) => {if(v!==undefined){return v.toString();} else {return '';}}).join('\t')}).join('\n')}`;
     
   }
 
@@ -300,7 +300,7 @@ class Uji {
   ////////////////////////////////////////////////
 
 
-  static ASAP(data, resolution) {
+  static ASAP(data, resolution=100) {
     if (resolution < data.length) {
         data = Uji.SMA(data, Math.trunc(data.length / resolution),
             Math.trunc(data.length / resolution));

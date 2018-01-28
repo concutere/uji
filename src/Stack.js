@@ -41,11 +41,17 @@ class StackOp extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {'onafterupdated':props.onafterupdated || null, 'ops':props.ops || {}, 'data':props.data || null};
+    this.state = {'onafterupdated':props.onafterupdated || null, 'ops':props.ops || {}, 'data':props.data || null, 'width':props.width || 100};
 
     this.afterUpdated = this.afterUpdated.bind(this);
     this.handleApply = this.handleApply.bind(this);
     this.applyOp = this.applyOp.bind(this);
+  }
+
+  componentWillReceiveProps(props) {
+    if (props.width) {
+      this.setState({'width':props.width})
+    }
   }
 
   afterUpdated(data, origin) {
@@ -64,7 +70,10 @@ class StackOp extends Component {
   applyOp(op) {
     if (this.state.data !== null && this.state.data.byCol !== null) {
       let data = this.state.data;
-      let calc = this.state.ops[op](data.byCol[data.headers[1]]);
+      var calc;
+      calc = this.state.ops[op](data.byCol[data.headers[1]]);
+
+      console.log(calc);
       data.byCol[data.headers[1]] = calc;
       let newdata = new Uji(null,data.byCol);
       //console.log(data, newdata);
