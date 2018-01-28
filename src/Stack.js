@@ -67,10 +67,10 @@ class StackOp extends Component {
       let calc = this.state.ops[op](data.byCol[data.headers[1]]);
       data.byCol[data.headers[1]] = calc;
       let newdata = new Uji(null,data.byCol);
-      console.log(data, newdata);
+      //console.log(data, newdata);
       this.setState({'data':newdata});
       //this.setState({'data':data}); //TODO move calc stack to Uji as "view"  ...
-      this.afterUpdated(data, op);
+      this.afterUpdated(newdata, op);
     }
   }
 

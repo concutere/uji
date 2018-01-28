@@ -90,7 +90,7 @@ class Uji {
     let min = Math.min(...data);
     let diff = max - min;
 
-    let scale = diff === 0 ? 1 : Math.min(1, y / diff);
+    let scale = diff === 0 ? 1 : y / diff;
     let scaled = data.map((v) => (max - v) * scale);
 
     let step = x / data.length;
@@ -255,7 +255,8 @@ class Uji {
   }
 
   static index(calcVals) {
-    return calcVals.map((v,i,a) => (v/a[0])*100); //TODO why is array sorted backwards here? clearer to fix elsewhere and use a[0] here ...
+    console.log(this.maxcs, this.mincs, calcVals);
+    return calcVals.map((v,i,a) => (v/a[0])*100); 
   }
 
   //////////////////////////////////////

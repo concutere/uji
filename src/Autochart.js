@@ -72,6 +72,7 @@ class AutoSvg extends Component {
     }
 
     let axs = this.state.data.axes(x, y);
+    console.log(axs);
     let xs = axs[0];
 
     return xs.map((xx, i) => <g><line x1={100*(i+1)} y1={this.state.height-30} x2={100*(i+1)} y2={this.state.height-25} stroke="black" strokeWidth="1"/><text x={100*(i+1) - 35} y={this.state.height - 10} fontFamily="Helvetica, Tahoma, Arial, sans-serif" fontSize="12">{xx}</text></g>);
@@ -83,6 +84,7 @@ class AutoSvg extends Component {
     }
 
     let axs = this.state.data.axes(x, y);
+    console.log(axs);
     let xs = axs[0];
     let ys = axs[1];
 
