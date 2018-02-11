@@ -45,11 +45,9 @@ class AutoSvg extends Component {
   }
 
   componentWillReceiveProps(props) {
-    if (this.state.data !== props.data) {
-      this.setState({
-        'data':props.data || this.state.data
-      });
-    }
+    this.setState({
+      'data':props.data
+    });
   }
 
   componentDidMount() {

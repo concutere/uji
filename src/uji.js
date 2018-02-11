@@ -97,7 +97,7 @@ class Uji {
 
     //TODO move str to App, return scaled/step 
     let str = scaled.map((v,i) => `${step*i},${v}`).join(' ');
-    //console.log(str);
+    console.log(str);
     return str;
   }
 
@@ -108,6 +108,7 @@ class Uji {
     }
 
     let data = this.byCol[this.headers[1]]; //TODO multicol + vari col opts
+    let times = this.byCol[this.headers[0]];
 
     if (data === null || data === undefined || data.length < 1) {
       return [[],[]];
@@ -123,7 +124,7 @@ class Uji {
     let xstep = ((x) / 100);
     let ystep = y / 50;
 
-    let dx = Math.floor(data.length / xstep);
+    let dx = Math.floor(times.length / xstep);
     let dy = Math.floor(scale / ystep);
 
     let ys = [];
@@ -176,10 +177,18 @@ class Uji {
     });
     rows.forEach((r,ri) => {
       headers.forEach((h,hi) => {
-        columns[h][ri] = r[hi];
+        var v = r[hi];
+        if(hi>0) {
+          try {
+            v = parseFloat(v); //TODO better colType parsing
+          }
+          catch(ex) {}
+        }
+
+        columns[h][ri] = v;
       });
     });
-    console.log(columns);
+    //console.log(columns);
     return columns;
   }
 
@@ -221,6 +230,11 @@ class Uji {
     return Uji.rows2string(this.byRow);
   }
 
+  static csv2rows(csv) {
+    console.log(csv);
+
+    return new Uji(csv);
+  }
 ///////////////////////////////////////
 
   static smooth(calcVals) {
@@ -228,11 +242,14 @@ class Uji {
     var smoothMax = 3;
     const ticksPerMonth = 21.5; //(365*(5/7))/12;
     const monthSpan = Math.round(calcVals.length / ticksPerMonth);
-    if(monthSpan > 1 && monthSpan < 6) {
+    if(monthSpan > 1 && monthSpan <= 6) {
       smoothMax = 7;
     }
-    else if(monthSpan >= 6) {
+    else if(monthSpan > 6 && monthSpan <= 12) {
       smoothMax = 21;
+    }
+    else if(monthSpan > 12) {
+      smoothMax = Math.floor(monthSpan* (21/12));
     }
 
     return calcVals.map((v,vi) => {
@@ -255,7 +272,7 @@ class Uji {
   }
 
   static index(calcVals) {
-    console.log(this.maxcs, this.mincs, calcVals);
+    //console.log(this.maxcs, this.mincs, calcVals);
     return calcVals.map((v,i,a) => (v/a[0])*100); 
   }
 
@@ -298,9 +315,11 @@ class Uji {
 
 
   ////////////////////////////////////////////////
-
-
-  static ASAP(data, resolution=100) {
+  
+  // the following code comes from http://futuredata.stanford.edu/asap/#code
+  
+  static ASAP(data) {//, resolution=100) {
+    let resolution = Math.floor(data.length / 21);
     if (resolution < data.length) {
         data = Uji.SMA(data, Math.trunc(data.length / resolution),
             Math.trunc(data.length / resolution));
@@ -398,5 +417,6 @@ class Metrics {
        }
        return diff;
   }
-}  
+} 
+
 export default Uji;

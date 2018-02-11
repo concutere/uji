@@ -111,9 +111,31 @@ class LoadFileOp extends StackOp {
   }
 
   parseFile(e) {
-    let res = JSON.parse(e.target.result).dataset;
-    let data = [res.column_names].concat(res.data).map((v) => {return v.filter((vv,i) => {return this.state.dateCol === i || this.state.valCols.includes(i)})});
-    this.setState({'data': new Uji(data), 'name':res.dataset_code});
+    var raw = (e.target.result);
+    var data,name;
+    //console.log(raw);
+    try {
+      let json = JSON.parse(raw);
+      let res = json.dataset;
+      name = res.dataset_code;
+      let rawdata = [res.column_names].concat(res.data).map((v) => {return v.filter((vv,i) => {return this.state.dateCol === i || this.state.valCols.includes(i)})});
+      data = new Uji(rawdata);
+    }
+    catch(ex) {
+      try {
+        //TODO refactor to Uji + improve csv parsing or get a lib ...
+        let rows = raw.trim().split('\n').map((r,ri) => {
+          return r.split(',').map((v, i, a) => v || a[i]);
+        });
+        data = new Uji(rows);
+      }
+      catch(ex2) {
+        console.log(ex2);
+        data=[];
+      }
+      //console.log(ex);
+    }
+    this.setState({'data': data, 'name':name});
     //console.log(this.state);
     this.afterLoaded();
   }
