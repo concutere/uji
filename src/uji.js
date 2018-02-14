@@ -319,7 +319,9 @@ class Uji {
   // the following code comes from http://futuredata.stanford.edu/asap/#code
   
   static ASAP(data) {//, resolution=100) {
-    let resolution = Math.floor(data.length / 21);
+    const minResolution = 50;
+    let resolution = Math.max(minResolution,Math.floor(data.length / 21));
+    console.log(resolution);
     if (resolution < data.length) {
         data = Uji.SMA(data, Math.trunc(data.length / resolution),
             Math.trunc(data.length / resolution));
