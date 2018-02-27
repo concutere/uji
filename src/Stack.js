@@ -11,7 +11,7 @@ class Stackbox extends Component {
   }
 
   afterUpdated(data, origin) {
-    //console.log('Stackbox.afterUpdated ${origin}');
+    //console.log(`Stackbox.afterUpdated ${origin}`);
     this.setState({'data':data});
 
     if(origin !== undefined) {
@@ -50,8 +50,12 @@ class StackOp extends Component {
 
   componentWillReceiveProps(props) {
     if (props.width) {
-      this.setState({'width':props.width})
+      this.setState({'width':props.width});
     }
+    if (props.data) {
+      this.setState({'data':props.data});
+    }
+
   }
 
   afterUpdated(data, origin) {

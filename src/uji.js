@@ -97,7 +97,7 @@ class Uji {
 
     //TODO move str to App, return scaled/step 
     let str = scaled.map((v,i) => `${step*i},${v}`).join(' ');
-    console.log(str);
+    //console.log(str);
     return str;
   }
 
@@ -231,7 +231,7 @@ class Uji {
   }
 
   static csv2rows(csv) {
-    console.log(csv);
+    //console.log(csv);
 
     return new Uji(csv);
   }
@@ -321,7 +321,7 @@ class Uji {
   static ASAP(data) {//, resolution=100) {
     const minResolution = 50;
     let resolution = Math.max(minResolution,Math.floor(data.length / 21));
-    console.log(resolution);
+    //console.log(resolution);
     if (resolution < data.length) {
         data = Uji.SMA(data, Math.trunc(data.length / resolution),
             Math.trunc(data.length / resolution));
