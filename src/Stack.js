@@ -79,6 +79,9 @@ class StackOp extends Component {
 
       console.log(calc);
       data.byCol[data.headers[1]] = calc;
+      if (data.byCol[data.headers[0]].length !== calc.length) {
+        data.byCol[data.headers[0]] = data.sampleTimes(calc.length)
+      }
       let newdata = new Uji(null,data.byCol);
       //console.log(data, newdata);
       this.setState({'data':newdata});

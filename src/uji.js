@@ -146,6 +146,18 @@ class Uji {
 
     return [ xs, ys ] ;
   }
+
+  sampleTimes(sampleCount) {
+    let times = this.byCol[this.headers[0]];
+    let dx = (times.length / Math.max(1,sampleCount));
+    let xs = [];
+    //console.log(xstep);
+    for (var xx = 0; xx < sampleCount; xx++) {
+      xs.push(this.byCol[this.headers[0]][Math.floor(xx*dx)]);
+    }
+
+    return xs;
+  }
   
   ////////////////////////////////
 
