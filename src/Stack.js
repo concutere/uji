@@ -72,8 +72,11 @@ class StackOp extends Component {
   }
 
   applyOp(op) {
-    if (this.state.data !== null && this.state.data.byCol !== null) {
+    if (this.state.data !== null) { //} && this.state.data.byCol !== null) {
       let data = this.state.data;
+      data.stackOn(this.state.ops[op]);
+
+      /*
       var calc;
       calc = this.state.ops[op](data.byCol[data.headers[1]]);
 
@@ -87,6 +90,8 @@ class StackOp extends Component {
       this.setState({'data':newdata});
       //this.setState({'data':data}); //TODO move calc stack to Uji as "view"  ...
       this.afterUpdated(newdata, op);
+      */
+     this.afterUpdated(data, op);
     }
   }
 

@@ -36,12 +36,21 @@ class Autochart extends Component {
 class AutoSvg extends Component {
   constructor(props) {
     super(props);
-
-    this.state = {
-      'data':props.data || new Uji(), 
-      'width':100, 
-      'height':100
-    };
+    
+    if(props.data !== undefined) {
+      this.state = {
+        'data':props.data,
+        'height':100,
+        'width':100
+      };
+    }
+    else {
+      this.state = {
+        'data': new Uji(), 
+        'width':100, 
+        'height':100
+      };
+    }
   }
 
   componentWillReceiveProps(props) {

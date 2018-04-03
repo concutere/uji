@@ -10,6 +10,7 @@ class Uji {
   constructor(dataByRow=null, dataByCol=null) {
     this.byRow = dataByRow || Uji.cols2rows(dataByCol);
     this.byCol = dataByCol || Uji.rows2cols(dataByRow);
+    
     if (this.byRow.length > 0) {
       this.updateStats();
     }
@@ -52,6 +53,16 @@ class Uji {
     }
   }
 
+  ////////////////////////////
+
+
+  getHeaders(cols=[0,1]) {
+    return cols.map((col) => this.byRow[0][col]);
+  }
+
+  getDataRows() {
+    return this.byRow.slice(1);
+  }
   /*
   nrml(min=0, max=1) {
     let range = max - min;
@@ -74,32 +85,6 @@ class Uji {
   }*/
 
   ////////////////////////////////
-
-  ptstr(x, y) {
-    if(this.byCol === null || this.byCol === undefined) {
-      return '';
-    }
-
-    let data = this.byCol[this.headers[1]]; //TODO multicol + vari col opts
-
-    if (data === null || data === undefined || data.length < 1) {
-      return '';
-    }
-
-    let max = Math.max(...data);
-    let min = Math.min(...data);
-    let diff = max - min;
-
-    let scale = diff === 0 ? 1 : y / diff;
-    let scaled = data.map((v) => (max - v) * scale);
-
-    let step = x / data.length;
-
-    //TODO move str to App, return scaled/step 
-    let str = scaled.map((v,i) => `${step*i},${v}`).join(' ');
-    //console.log(str);
-    return str;
-  }
 
   axes(x, y) {
     //console.log(`x:${x}, y:${y}`);
@@ -147,12 +132,13 @@ class Uji {
     return [ xs, ys ] ;
   }
 
-  sampleTimes(sampleCount) {
+  sampleTimes(sampleCount=100) {
     let times = this.byCol[this.headers[0]];
+  //  console.log()
     let dx = (times.length / Math.max(1,sampleCount));
-    let xs = [];
+    let xs = [];//'date'];
     //console.log(xstep);
-    for (var xx = 0; xx < sampleCount; xx++) {
+    for (var xx = 1; xx < sampleCount; xx++) {
       xs.push(this.byCol[this.headers[0]][Math.floor(xx*dx)]);
     }
 
@@ -219,6 +205,11 @@ class Uji {
     });
   }
 
+
+  //////////////////////////////////////////
+  // TODO refactor string-based content functions into separate utility? (ie toString, ptstr)
+  // TODO support multicol/colopts
+
   static rows2string(dataByRow, includeHeaders = true, includeDates=true) {
     if (dataByRow === null || dataByRow === undefined || dataByRow.length < 1) {
       return '';
@@ -239,14 +230,48 @@ class Uji {
   }
 
   toString() {
-    return Uji.rows2string(this.byRow);
+    return Uji.rows2string(this.viewWithTimes());
   }
+
+  ptstr(x, y) {
+    if(this.byCol === null || this.byCol === undefined) {
+      return '';
+    }
+
+    let data = this.view();//this.byCol[this.headers[1]]; //TODO multicol + vari col opts
+
+    if (data === null || data === undefined || data.length < 1) {
+      return '';
+    }
+
+    let max = Math.max(...data);
+    let min = Math.min(...data);
+    let diff = max - min;
+
+    let scale = diff === 0 ? 1 : y / diff;
+    let scaled = data.map((v) => (max - v) * scale);
+
+    let step = x / data.length;
+
+    //TODO move str to App, return scaled/step 
+    let str = scaled.map((v,i) => `${step*i},${v}`).join(' ');
+    //console.log(str);
+    return str;
+  }
+
+
+  ////////////////////////////////////////////////
 
   static csv2rows(csv) {
     //console.log(csv);
 
     return new Uji(csv);
   }
+
+
+
+
+
 ///////////////////////////////////////
 
   static smooth(calcVals) {
@@ -297,7 +322,7 @@ class Uji {
     );
   }
 
-  static flatten(vals) {
+  flatten(vals) {
     if(this.stack) {
       this.stack.forEach((transform,i) => {
         vals = transform(vals);
@@ -306,11 +331,11 @@ class Uji {
     return vals;
   }
 
-  static flattenStack(cols, data) {
-    return Uji.flatten(Uji.combine(cols, data));
+  flattenStack(cols, data) {
+    return this.flatten(Uji.combine(cols, data));
   }
 
-  static stackOn(transform) {
+  stackOn(transform) {
     if(!this.stack) {
       this.stack=[transform];
     }
@@ -323,6 +348,25 @@ class Uji {
     if(this.stack && this.stack.includes(transform)) {
       this.stack.splice(this.stack.indexOf(transform),1);
     }
+  }
+
+  viewTimes(viewData) {
+    return this.sampleTimes((viewData || this.view()).length);
+  }
+
+  view(cols=[1]) {
+    //TODO colopts
+    return this.flattenStack(cols,this.getDataRows());
+  }
+
+  viewWithTimes(cols=[1]) {
+    let vv = this.view(cols);
+    let tt = this.viewTimes(vv);
+
+    //TODO opt headers?
+    return tt.map((tv, ti) => {
+      return [tv, vv[ti]];
+    });
   }
 
 
