@@ -230,7 +230,7 @@ class Uji {
   }
 
   toString() {
-    return Uji.rows2string(this.viewWithTimes());
+    return Uji.rows2string([this.getHeaders()].concat(this.viewWithTimes()));
   }
 
   ptstr(x, y) {
