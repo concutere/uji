@@ -289,19 +289,22 @@ class Uji {
       smoothMax = Math.floor(monthSpan* (21/12));
     }
 
-    return calcVals.map((v,vi) => {
+    let rtnVals = calcVals.map((v,vi) => {
       if (smoothWith.length == smoothMax) {
         smoothWith = smoothWith.slice(1);
       }
       smoothWith.push(v);
 
       if(smoothWith.length > 1) {
-        return smoothWith.reduce((acc,n) => acc+n) / smoothWith.length;
+        let rv = smoothWith.reduce((acc,n) => acc+n) / smoothWith.length;
+        return rv;
       }
       else {
         return v;
       }
     });
+
+    return rtnVals;
   }
 
   static log(calcVals) {
@@ -316,10 +319,12 @@ class Uji {
   //////////////////////////////////////
 
   static combine(cols, data) {
-    return data.map((row) => 
-            cols.map((vc) => row[vc])
+    let rd = data.map((row) => 
+            cols.map((vc) => parseFloat(row[vc]))
               .reduce((acc,n) => acc*n)
     );
+
+    return rd;
   }
 
   flatten(vals) {
