@@ -92,8 +92,8 @@ class Uji {
       return [[],[]];
     }
 
-    let data = this.byCol[this.headers[1]]; //TODO multicol + vari col opts
-    let times = this.byCol[this.headers[0]];
+    let data = this.view();//this.byCol[this.headers[1]]; //TODO multicol + vari col opts
+    let times = this.byCol[this.headers[0]]; //TODO use viewTimes
 
     if (data === null || data === undefined || data.length < 1) {
       return [[],[]];
