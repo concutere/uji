@@ -50,7 +50,13 @@ class Stackbox extends Component {
 
     if(this.state.history !== null && this.state.lines !== null && this.state.history.length === this.state.lines.length) {
     
-      hSteps = this.state.history.map((h,i,a) => <UsedOp history={h} line={this.state.lines[i]}/>);
+      hSteps = this.state.history.map((h,i,a) => {
+        var prior;
+        if (i > 0) {
+          prior = this.state.lines[i-1];
+        }
+      return <UsedOp history={h} line={this.state.lines[i]} priorLine={prior}/>
+    });
     }
 
 
@@ -181,11 +187,17 @@ class LoadFileOp extends StackOp {
 class UsedOp extends StackOp {
   constructor(props) {
     super(props) ;
-    this.state = {'history':props.history || '', 'line':props.line || '', 'data':null, 'ops':null, 'onafterupdated':null};
+    this.state = {'history':props.history || '', 'line':props.line || '', 'priorLine':props.priorLine || '', 'data':null, 'ops':null, 'onafterupdated':null};
   }
 
   renderLine() {
     if(this.state.line) {
+      console.log(this.state.history);
+      if(this.state.priorLine && (['smooth','ASAP','log']).includes(this.state.history)) {
+        let prior = this.state.priorLine.split(' ').reverse().join(' ');
+
+        return <polygon points={`${this.state.line} ${prior}`} fill="red" stroke="transparent" transform="translate(0,5)" />
+      }
       return <polyline points={this.state.line} transform="translate(0,5)" />
     }
   }
