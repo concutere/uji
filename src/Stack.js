@@ -25,15 +25,19 @@ class Stackbox extends Component {
   }
 
   render() {
-    var nextSteps;
-    if(this.state.data === null) {
-      nextSteps='';
+    var nextSteps, hSteps;
+
+    if(this.state.data !== null) {
+      nextSteps=<StackOp onafterupdated={this.afterUpdated} data={this.state.data} ops={this.state.ops} />;
     }
-    else {
-      //TODO history, more ops ...
-      nextSteps=<StackOp onafterupdated={this.afterUpdated} data={this.state.data} ops={this.state.ops} />
+
+    if(this.state.history !== null && this.state.history.length > 1) {
+    
+      hSteps = this.state.history.slice(1).map((h,i,a) => <UsedOp history={h} />);
     }
-    return <div id="stackbox"><LoadFileOp onafterupdated={this.afterUpdated}/>{nextSteps}</div>;
+
+
+    return <div id="stackbox"><LoadFileOp onafterupdated={this.afterUpdated}/>{hSteps}{nextSteps}</div>;
   }
 }
 
@@ -154,6 +158,17 @@ class LoadFileOp extends StackOp {
 
   render() {
     return <div id="fetch" style={{fontWeight:'bold', color:'steelblue'}}><input type="file" onClick={(e) => e.target.value=''} onChange={(e) => {let fr = new FileReader(); fr.addEventListener('loadend', this.parseFile); fr.readAsText(e.target.files[0]); }} /></div>
+  }
+}
+
+class UsedOp extends StackOp {
+  constructor(props) {
+    super(props) ;
+    this.state = {'history':props.history || '', 'data':null, 'ops':null, 'onafterupdated':null};
+  }
+
+  render() {
+    return <div id="stackop"><div id={`op-${this.state.history}`} className="used">{this.state.history}</div></div>
   }
 }
 

@@ -105,7 +105,7 @@ th {
 	overflow:hidden;
 	display:grid;
 
-	grid-auto-columns: minmax(90px, 200px);
+	grid-auto-columns: min-content;
 	grid-template-rows:90px;
 	grid-gap: 0 10px;
 	padding:5px;
