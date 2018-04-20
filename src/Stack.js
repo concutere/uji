@@ -11,7 +11,7 @@ class Stackbox extends Component {
   }
 
   afterUpdated(data, origin) {
-    //console.log(`Stackbox.afterUpdated ${origin}`);
+    console.log(`Stackbox.afterUpdated ${origin}`);
     this.setState({'data':data});
 
     if(origin !== undefined) {
@@ -28,14 +28,17 @@ class Stackbox extends Component {
       this.state.onafterupdated(data, origin);
     }
     if (data !== undefined && origin !== undefined) {
-      if(origin === 'loadfile') {
-        this.setState({'lines':[]});
-      }
-      else {
         const pts = data.ptstr(80,50);
-        this.state.lines.push(pts);
-      }
+        if(origin === 'loadfile') {
+          this.setState({'lines':[pts]})
+        }
+        else {
+          const lines = this.state.lines;
+          lines.push(pts);
+          this.setState({'lines':lines});
+        }
     }
+
   }
 
   render() {
@@ -45,9 +48,9 @@ class Stackbox extends Component {
       nextSteps=<StackOp onafterupdated={this.afterUpdated} data={this.state.data} ops={this.state.ops} />;
     }
 
-    if(this.state.history !== null && this.state.history.length > 1) {
+    if(this.state.history !== null && this.state.lines !== null && this.state.history.length === this.state.lines.length) {
     
-      hSteps = this.state.history.slice(1).map((h,i,a) => <UsedOp history={h} line={this.state.lines[i]}/>);
+      hSteps = this.state.history.map((h,i,a) => <UsedOp history={h} line={this.state.lines[i]}/>);
     }
 
 
@@ -184,9 +187,6 @@ class UsedOp extends StackOp {
   renderLine() {
     if(this.state.line) {
       return <polyline points={this.state.line} transform="translate(0,5)" />
-    }
-    else {
-      console.log('poo...')
     }
   }
 
