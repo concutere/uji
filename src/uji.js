@@ -327,17 +327,18 @@ class Uji {
     return rd;
   }
 
-  flatten(vals) {
-    if(this.stack) {
-      this.stack.forEach((transform,i) => {
+  flatten(vals, stack) {
+    stack = stack || this.stack;
+    if(stack) {
+      stack.forEach((transform,i) => {
         vals = transform(vals);
       });
     }
     return vals;
   }
 
-  flattenStack(cols, data) {
-    return this.flatten(Uji.combine(cols, data));
+  flattenStack(cols, data, stack) {
+    return this.flatten(Uji.combine(cols, data),stack);
   }
 
   stackOn(transform) {
@@ -359,9 +360,9 @@ class Uji {
     return this.sampleTimes((viewData || this.view()).length);
   }
 
-  view(cols=[1]) {
+  view(cols=[1],stack) {
     //TODO colopts
-    return this.flattenStack(cols,this.getDataRows());
+    return this.flattenStack(cols,this.getDataRows(),stack);
   }
 
   viewWithTimes(cols=[1]) {

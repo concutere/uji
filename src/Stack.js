@@ -5,7 +5,7 @@ class Stackbox extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {'onafterupdated':props.onafterupdated || null, 'ops':props.ops || [], 'data':null, 'history':[]};
+    this.state = {'onafterupdated':props.onafterupdated || null, 'ops':props.ops || [], 'data':null, 'history':[], 'lines':[]};
 
     this.afterUpdated = this.afterUpdated.bind(this);    
   }
@@ -15,12 +15,26 @@ class Stackbox extends Component {
     this.setState({'data':data});
 
     if(origin !== undefined) {
-      let history = this.state.history;
-      history.push(origin);
+      const history = this.state.history;
+      if(origin==='loadfile') {
+        history = [origin];
+      }
+      else {
+        history.push(origin);
+      }
       this.setState({'history':history});
     }
     if(this.state.onafterupdated !== null) {
       this.state.onafterupdated(data, origin);
+    }
+    if (data !== undefined && origin !== undefined) {
+      if(origin === 'loadfile') {
+        this.setState({'lines':[]});
+      }
+      else {
+        const pts = data.ptstr(80,50);
+        this.state.lines.push(pts);
+      }
     }
   }
 
@@ -33,7 +47,7 @@ class Stackbox extends Component {
 
     if(this.state.history !== null && this.state.history.length > 1) {
     
-      hSteps = this.state.history.slice(1).map((h,i,a) => <UsedOp history={h} />);
+      hSteps = this.state.history.slice(1).map((h,i,a) => <UsedOp history={h} line={this.state.lines[i]}/>);
     }
 
 
@@ -164,11 +178,24 @@ class LoadFileOp extends StackOp {
 class UsedOp extends StackOp {
   constructor(props) {
     super(props) ;
-    this.state = {'history':props.history || '', 'data':null, 'ops':null, 'onafterupdated':null};
+    this.state = {'history':props.history || '', 'line':props.line || '', 'data':null, 'ops':null, 'onafterupdated':null};
+  }
+
+  renderLine() {
+    if(this.state.line) {
+      return <polyline points={this.state.line} transform="translate(0,5)" />
+    }
+    else {
+      console.log('poo...')
+    }
   }
 
   render() {
-    return <div id="stackop"><div id={`op-${this.state.history}`} className="used">{this.state.history}</div></div>
+    return <div id="stackop"><div id={`op-${this.state.history}`} className="used">{this.state.history}</div>
+      <svg className="stackgraph">
+        {this.renderLine()}
+      </svg>
+    </div>
   }
 }
 
