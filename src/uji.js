@@ -116,8 +116,8 @@ class Uji {
 
     //console.log(ystep);
     for (var yy = 0; yy*50 <= y; yy++) {
-      //TODO only floor for int data (round to _ digits for decimal? need to handle date data in y axis?)
-      ys.push(Math.floor(min + ((yy*50)/y) * diff));
+      //TODO no rounding for int data...
+      ys.push(Math.round((min + ((yy*50)/y) * diff) * 100) / 100);
       //console.log(ys);
     }
 
@@ -126,7 +126,7 @@ class Uji {
 
     //console.log(xstep);
     for (var xx = 0; xx*100 <= x; xx++) {
-      xs.push(this.byCol[this.headers[0]][Math.floor(xx*dx)]);
+      xs.push(this.byCol[this.headers[0]][Math.round(xx*dx)]);
     }
 
     return [ xs, ys ] ;
@@ -313,7 +313,7 @@ class Uji {
 
   static index(calcVals) {
     //console.log(this.maxcs, this.mincs, calcVals);
-    return calcVals.map((v,i,a) => (v/a[0])*100); 
+    return calcVals.map((v,i,a) => v/a[0]); 
   }
 
   //////////////////////////////////////
