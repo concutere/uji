@@ -193,18 +193,33 @@ class UsedOp extends StackOp {
   renderLine() {
     if(this.state.line) {
       console.log(this.state.history);
+      var diff;
       if(this.state.priorLine && (['smooth','ASAP','log']).includes(this.state.history)) {
-        let prior = this.state.priorLine.split(' ').reverse().join(' ');
-
-        return <polygon points={`${this.state.line} ${prior}`} fill="red" stroke="transparent" transform="translate(0,5)" />
+        let priors = this.state.priorLine.split(' ').reverse();
+        let priorstr = priors.join(' ');
+        /*let pts = this.state.line.split(' ');
+        let bars = pts.map((v,i,a) => {
+          return <polyline points={`${v} ${priors[i]}`} stroke="url(#lg)" />
+        });
+        return <g>
+          {bars}
+        </g>
+*/
+        diff = <polygon points={`${this.state.line} ${priorstr}`} fill="orangered" stroke="transparent" transform="translate(0,5)" />
       }
-      return <polyline points={this.state.line} transform="translate(0,5)" />
+      return <g>{diff}<polyline points={this.state.line} transform="translate(0,5)" /></g>
     }
   }
 
   render() {
     return <div id="stackop"><div id={`op-${this.state.history}`} className="used">{this.state.history}</div>
       <svg className="stackgraph">
+        <defs>
+          <linearGradient id="lg" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0" stop-color="pink"/>
+            <stop offset="1" stop-color="blue"/>
+          </linearGradient>
+        </defs>
         {this.renderLine()}
       </svg>
     </div>
