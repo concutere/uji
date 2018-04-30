@@ -214,12 +214,6 @@ class UsedOp extends StackOp {
   render() {
     return <div id="stackop"><div id={`op-${this.state.history}`} className="used">{this.state.history}</div>
       <svg className="stackgraph">
-        <defs>
-          <linearGradient id="lg" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0" stop-color="pink"/>
-            <stop offset="1" stop-color="blue"/>
-          </linearGradient>
-        </defs>
         {this.renderLine()}
       </svg>
     </div>
